@@ -1,11 +1,14 @@
 
 // Require the necessary modules
 const inquirer = require('inquirer');
-const Manager = require('./lib/Manager');
-const Engineer = require('./lib/Engineer');
-const Intern = require('./lib/Intern');
-const generateHTML = require('./util/generateHTML');
+const Manager = require('./lib/Manager.js');
+const Engineer = require('./lib/Engineer.js');
+const Intern = require('./lib/Intern.js');
+const generateHTML = require('./util/generateHTML.js');
 const jest = require('jest');
+const fs = require('fs');
+const path = require('path');
+
 // Create an empty team array
 const team = [];
 
@@ -148,8 +151,25 @@ async function promptNextAction() {
         await promptIntern();
         break;
       default:
-        generateHTML(team);
+        const html = generateHTML(team);
+        generateHTMLFile(team);
         break;
     }
   }
-  promptManager();
+  function generateHTMLFile(team) {
+    const html = generateHTML(team);
+    const filePath = path.join(__dirname, 'dist','team.html');
+    fs.writeFile(filePath, html, (err) => {
+      if (err) throw err;
+      console.log('Team HTML file generated successfully!');
+    });
+  }
+  async function init() {
+    try {
+      await promptManager();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
+  init(); 
