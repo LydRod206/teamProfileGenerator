@@ -152,3 +152,4 @@ async function promptNextAction() {
         break;
     }
   }
+  promptManager();
